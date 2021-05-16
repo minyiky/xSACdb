@@ -3,7 +3,7 @@
 {% load widget_tweaks %}
 
 {% block trips_content %}
-    <form action="." method="POST">
+    <form action="." method="POST" enctype="multipart/form-data">
         {% csrf_token %}
 
         {% with WIDGET_ERROR_CLASS='form-control-danger' WIDGET_REQUIRED_CLASS='my_required' %}
@@ -56,6 +56,7 @@
                 </div>
 
                 <div class="col-md-6">
+                    {% include 'xsd_trips/edit_field.html' with field=form.image %}                    
                     {% render_field form.description class+="form-control" placeholder="Description" %}
                     <p class="form-text text-muted">
                         Styling with <a href="{{ l10n_club.markdown_help }}" target="_blank">Markdown</a> is supported.

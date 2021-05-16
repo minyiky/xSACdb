@@ -1,9 +1,11 @@
 
 
 import random
+import requests
 
 from django.contrib.auth.models import Group
 from django.core.exceptions import PermissionDenied
+from discord import Webhook, RequestsWebhookAdapter
 
 from xSACdb.roles.groups import GROUP_TRIPS
 from xSACdb.test_helpers import BaseTest
@@ -25,6 +27,8 @@ class BaseTripTest(BaseTest):
         self.open_trip.set_open(self.do)
 
     def create_a_trip(self):
+        webhook = Webhook.from_url("https://discord.com/api/webhooks/839835947872288768/j-JqFQ6D-3SjRn9mPo_8TuU1dibzG9ykuQh6nGPgjovbv3zXrMIvXrQDnq22UwpZFVKU", adapter=RequestsWebhookAdapter())
+        webhook.send("Hello World")
         return Trip.objects.create(
             name=self.fake.name(),
             date_start=self.fake.date_time_between(start_date='now', end_date='+10y').date(),

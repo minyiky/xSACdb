@@ -2,6 +2,7 @@
 
 import csv
 import datetime
+import discord
 
 import reversion
 from django.conf import settings
@@ -15,6 +16,7 @@ from django.views.generic import DetailView
 from django.views.generic import View
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic.list import ListView
+from discord import Webhook, RequestsWebhookAdapter
 
 from .models import Trip
 from xSACdb.roles.functions import is_trips
@@ -26,6 +28,26 @@ from xsd_members.bulk_select import get_bulk_members
 from xsd_members.models import MemberProfile
 from xsd_trips.forms import TripForm
 from xsd_trips.models.trip_member import TripMember
+
+
+def discord_update(trip):
+    webhook = Webhook.from_url("https://discord.com/api/webhooks/839835947872288768/j-JqFQ6D-3SjRn9mPo_8TuU1dibzG9ykuQh6nGPgjovbv3zXrMIvXrQDnq22UwpZFVKU", adapter=RequestsWebhookAdapter())
+    msg = discord.Embed()
+    msg.title = trip.name
+    image_name = trip.image.url.split('/')[-1]
+    image_path = settings.MEDIA_ROOT + '/trip_images/' + image_name
+#    image_path = 'http://127.0.0.1:8000' + trip.image.url
+    print(image_path)
+    file = discord.File(image_path)
+    msg.set_image(url="attachment://{}".format(image_name))
+    msg.add_field(name="Departs", value=trip.date_start)
+    if trip.duration > 1: msg.add_field(name="Returns", value=trip.date_end)
+    msg.add_field(name="Cost", value='£{}'.format(trip.cost))
+    msg.add_field(name="Depth", value='{}m'.format(trip.max_depth))
+    msg.add_field(name="Spaces", value=trip.spaces)
+    msg.description = trip.description
+    webhook.send(embed=msg, file=file)
+
 
 
 class BaseTripListView(ListView):
@@ -64,16 +86,19 @@ class TripListAdmin(RequireTripsOfficer, BaseTripListView):
 
 
 class TripCreate(RequireVerified, CreateView):
+    print("Trip Create")
     model = Trip
     form_class = TripForm
     template_name = 'xsd_trips/edit.html'
 
     def form_valid(self, form):
+        print("Trip Create")
         with DoAction() as action, reversion.create_revision():
             # Patch in setting the trip owner
             trip = form.save(commit=False)
             # trip.owner = self.request.user.profile
             trip.owner = self.request.user.profile
+            print(trip.image)
             trip.save()
             action.set(actor=self.request.user, verb='requested approval for trip', target=trip, style='trip-create')
             return super(TripCreate, self).form_valid(form)
@@ -131,6 +156,7 @@ class TripSet(RequireVerified, ActionView):
 
     def approve(self, request):
         self.get_object().set_approved(request.user)
+        discord_update(self.get_object())
 
     def cancel(self, request):
         self.get_object().set_cancelled(request.user)

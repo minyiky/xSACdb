@@ -59,7 +59,7 @@ def logout(request):
 
 def update_request(request):
     if request.POST:
-        form = UpdateRequestMake(request.POST)
+        form = UpdateRequestMake(request.POST, request.FILES)
         form.data = form.data.copy()
         if form.is_valid():
             ur = form.save()

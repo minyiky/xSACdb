@@ -17,6 +17,7 @@ class TripForm(forms.ModelForm):
             'spaces',
             'max_depth',
             'min_qual',
+            'image',
             'description',
         )
 

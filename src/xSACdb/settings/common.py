@@ -265,3 +265,7 @@ INSPECT_API_KEY_SALT = "EMQ2b6iDt96N"
 if os.environ.get('XSACDB_XMLTESTRUNNER'):
     TEST_RUNNER = 'xmlrunner.extra.djangotestrunner.XMLTestRunner'
     TEST_OUTPUT_FILE_NAME = 'junit-django.xml'
+
+BASE_DIR = 'D:/Workspace/xSACdb/src/'
+MEDIA_ROOT =  os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'

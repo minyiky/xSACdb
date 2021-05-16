@@ -10,6 +10,7 @@ elif 'XSACDB_ENVIRONMENT' in os.environ and os.environ['XSACDB_ENVIRONMENT'] == 
     from .test import *
 else:
     ENVIRONMENT = 'DEVELOPMENT'
+    print(ENVIRONMENT)
     from .development import *
 
 # Club conf default inserter

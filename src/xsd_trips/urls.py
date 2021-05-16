@@ -1,6 +1,8 @@
 
 
 from django.conf.urls import url
+from django.conf import settings
+from django.conf.urls.static import static
 
 from .views import *
 
@@ -21,3 +23,4 @@ urlpatterns = [
     url(r'^(?P<pk>\d+)/delete/$', TripDelete.as_view(), name='TripDelete'),
     url(r'^(?P<pk>\d+)/roster/$', TripAttendeeRosterDump.as_view(), name='TripAttendeeRosterDump'),
 ]
+

@@ -1,6 +1,8 @@
 
 
 import reversion
+import requests
+
 from django.conf import settings
 from django.core.exceptions import PermissionDenied
 from reversion import revisions
@@ -107,6 +109,7 @@ class TripStateMixin:
         if not self.can_approve(actor):
             raise PermissionDenied
         with DoAction() as action, reversion.create_revision():
+            # TODO impliment this properly
             self.state = STATE_APPROVED
             self.save()
             revisions.set_user(actor)

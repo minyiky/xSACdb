@@ -46,6 +46,8 @@ class Trip(TripStateMixin,
                                  help_text='Indication of the minimum qualification needed to participate on this trip\'s diving.',
                                  on_delete=models.SET_NULL)
 
+    image = models.ImageField(verbose_name='Trip Image', upload_to='trip_images/', default="svg/logo-scuba-white-trimmed.svg")
+
     # Copy states from states
     STATE_DENIED = STATE_DENIED
     STATE_NEW = STATE_NEW
@@ -90,7 +92,7 @@ class Trip(TripStateMixin,
         if self.date_end:
             return (self.date_end - self.date_start).days + 1
         else:
-            return None
+            return 1
 
     def get_absolute_url(self):
         return reverse('xsd_trips:TripDetail', kwargs={'pk': self.pk})
